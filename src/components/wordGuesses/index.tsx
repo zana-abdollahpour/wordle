@@ -1,11 +1,12 @@
+import { useGameState } from "../../hooks/useGameState";
 import GuessRow from "./GuessRow";
 
 export default function WordGuesses() {
+  const { numAllowedTries } = useGameState();
+
   return (
     <ul className="mt-12 flex flex-col items-center justify-center gap-2">
-      {/* TODO: change the number to match the number of allowed tries */}
-
-      {Array(6)
+      {Array(numAllowedTries)
         .fill(null)
         .map((_, i) => (
           <GuessRow key={i} />
