@@ -4,7 +4,7 @@ import { GameProvider } from "./contexts/gameContext";
 
 export default function App() {
   return (
-    <div className="h-screen w-screen bg-black/90">
+    <div className="h-screen w-screen">
       <div className="mx-auto flex max-w-[30rem] flex-col items-center gap-8 pt-12">
         <GameProvider>
           <WordGuesses />
