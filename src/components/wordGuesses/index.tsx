@@ -9,7 +9,7 @@ export default function WordGuesses() {
       {Array(numAllowedTries)
         .fill(null)
         .map((_, i) => (
-          <GuessRow key={i} />
+          <GuessRow key={i} tryIndex={i} />
         ))}
     </ul>
   );

@@ -9,6 +9,7 @@ export interface IGameContext {
   previousGuesses: string[];
   setCurrentGuess: React.Dispatch<React.SetStateAction<string>>;
   setPreviousGuesses: React.Dispatch<React.SetStateAction<string[]>>;
+  currentTry: number;
 }
 
 export const GameContext = createContext<IGameContext | null>(null);
@@ -22,6 +23,8 @@ export const GameProvider = ({
   const [currentGuess, setCurrentGuess] = useState<string>("");
   const [previousGuesses, setPreviousGuesses] = useState<string[]>([]);
 
+  const currentTry = previousGuesses.length;
+
   return (
     <GameContext.Provider
       value={{
@@ -31,6 +34,7 @@ export const GameProvider = ({
         setCurrentGuess,
         previousGuesses,
         setPreviousGuesses,
+        currentTry,
       }}
     >
       {children}
