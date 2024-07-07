@@ -4,18 +4,41 @@ import "react-simple-keyboard/build/css/index.css";
 import { useGameState } from "../../hooks/useGameState";
 
 export default function VirtualKeyboard() {
-  const { targetWord, currentGuess, setCurrentGuess } = useGameState();
+  const {
+    targetWord,
+    currentGuess,
+    setCurrentGuess,
+    setCharPlaceValidation,
+    setPreviousGuesses,
+  } = useGameState();
 
   const handleKeyPress = (pressedKey: string) => {
     if (pressedKey === "{backspace}") {
       setCurrentGuess((prev) => prev.slice(0, -1));
       return;
     }
+
     if (pressedKey === "{ent}") {
       if (targetWord.length > currentGuess.length) return;
-      // TODO: Check to see if targetWord and current guess match
 
-      console.log(pressedKey);
+      const hasTargetChar = [...currentGuess].some((char) =>
+        [...targetWord].includes(char),
+      );
+
+      if (!hasTargetChar) return;
+
+      setCharPlaceValidation(
+        [...currentGuess].map((char, i) =>
+          char === targetWord[i]
+            ? "right"
+            : [...targetWord].includes(char)
+              ? "wrong"
+              : "absent",
+        ),
+      );
+
+      setPreviousGuesses((prev) => [...prev, currentGuess]);
+      setCurrentGuess("");
     }
 
     const isValidLetter =

@@ -3,7 +3,13 @@ import { useEffect } from "react";
 import { useGameState } from "../../hooks/useGameState";
 
 export default function WindowKeyPressHandler() {
-  const { targetWord, currentGuess, setCurrentGuess } = useGameState();
+  const {
+    targetWord,
+    currentGuess,
+    setCurrentGuess,
+    setCharPlaceValidation,
+    setPreviousGuesses,
+  } = useGameState();
 
   useEffect(() => {
     const keyPressHandler = (e: KeyboardEvent) => {
@@ -12,7 +18,25 @@ export default function WindowKeyPressHandler() {
       }
       if (e.key === "Enter") {
         if (targetWord.length > currentGuess.length) return;
-        // TODO: Check to see if targetWord and current guess match
+
+        const hasTargetChar = [...currentGuess].some((char) =>
+          [...targetWord].includes(char),
+        );
+
+        if (!hasTargetChar) return;
+
+        setCharPlaceValidation(
+          [...currentGuess].map((char, i) =>
+            char === targetWord[i]
+              ? "right"
+              : [...targetWord].includes(char)
+                ? "wrong"
+                : "absent",
+          ),
+        );
+
+        setPreviousGuesses((prev) => [...prev, currentGuess]);
+        setCurrentGuess("");
       }
 
       if (currentGuess.length >= targetWord.length) return;
@@ -25,7 +49,15 @@ export default function WindowKeyPressHandler() {
 
     window.addEventListener("keydown", keyPressHandler);
     return () => window.removeEventListener("keydown", keyPressHandler);
-  }, [currentGuess.length, setCurrentGuess, targetWord.length]);
+  }, [
+    currentGuess,
+    currentGuess.length,
+    setCharPlaceValidation,
+    setCurrentGuess,
+    setPreviousGuesses,
+    targetWord,
+    targetWord.length,
+  ]);
 
   return null;
 }
