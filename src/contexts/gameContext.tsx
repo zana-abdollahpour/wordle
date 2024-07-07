@@ -19,7 +19,7 @@ export const GameProvider = ({
   // You can use lazy initialization with callback function to get the word from an api
   // We don't need setter function, because we won't change it
   const [targetWord] = useState<string>("regret");
-  const [currentGuess, setCurrentGuess] = useState<string>("second");
+  const [currentGuess, setCurrentGuess] = useState<string>("");
   const [previousGuesses, setPreviousGuesses] = useState<string[]>([]);
 
   return (
