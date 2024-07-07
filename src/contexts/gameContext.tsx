@@ -3,6 +3,8 @@ import { createContext, useState } from "react";
 const NUM_ALLOWED_TRIES = 6;
 
 export type Validity = "right" | "wrong" | "absent";
+
+export type GameResult = "You Won!" | "You Lost!" | "keep guessing ...";
 export interface IGameContext {
   numAllowedTries: number;
   targetWord: string;
@@ -13,6 +15,8 @@ export interface IGameContext {
   currentTry: number;
   charPlaceValidation: Validity[];
   setCharPlaceValidation: React.Dispatch<React.SetStateAction<Validity[]>>;
+  result: GameResult;
+  setResult: React.Dispatch<React.SetStateAction<GameResult>>;
 }
 
 export const GameContext = createContext<IGameContext | null>(null);
@@ -28,8 +32,11 @@ export const GameProvider = ({
   const [charPlaceValidation, setCharPlaceValidation] = useState<Validity[]>(
     [],
   );
+  const [result, setResult] = useState<GameResult>("keep guessing ...");
 
   const currentTry = previousGuesses.length;
+
+  if (currentTry >= NUM_ALLOWED_TRIES) setResult("You Lost!");
 
   return (
     <GameContext.Provider
@@ -43,6 +50,8 @@ export const GameProvider = ({
         currentTry,
         charPlaceValidation,
         setCharPlaceValidation,
+        result,
+        setResult,
       }}
     >
       {children}

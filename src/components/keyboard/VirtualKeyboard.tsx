@@ -10,6 +10,7 @@ export default function VirtualKeyboard() {
     setCurrentGuess,
     setCharPlaceValidation,
     setPreviousGuesses,
+    setResult,
   } = useGameState();
 
   const handleKeyPress = (pressedKey: string) => {
@@ -26,6 +27,10 @@ export default function VirtualKeyboard() {
       );
 
       if (!hasTargetChar) return;
+
+      if (currentGuess === targetWord) {
+        setResult("You Won!");
+      }
 
       setCharPlaceValidation(
         [...currentGuess].map((char, i) =>

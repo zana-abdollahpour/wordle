@@ -9,6 +9,7 @@ export default function WindowKeyPressHandler() {
     setCurrentGuess,
     setCharPlaceValidation,
     setPreviousGuesses,
+    setResult,
   } = useGameState();
 
   useEffect(() => {
@@ -24,6 +25,10 @@ export default function WindowKeyPressHandler() {
         );
 
         if (!hasTargetChar) return;
+
+        if (currentGuess === targetWord) {
+          setResult("You Won!");
+        }
 
         setCharPlaceValidation(
           [...currentGuess].map((char, i) =>
@@ -55,6 +60,7 @@ export default function WindowKeyPressHandler() {
     setCharPlaceValidation,
     setCurrentGuess,
     setPreviousGuesses,
+    setResult,
     targetWord,
     targetWord.length,
   ]);
