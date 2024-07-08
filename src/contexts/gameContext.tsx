@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import type { CharPlacement } from "../types/guess.types";
 
@@ -32,7 +32,9 @@ export const GameProvider = ({
 
   const currentGuessIndex = guesses.length;
 
-  if (currentGuessIndex >= NUM_ALLOWED_TRIES) setGameResult("Lost");
+  useEffect(() => {
+    if (currentGuessIndex === NUM_ALLOWED_TRIES) setGameResult("Lost");
+  }, [currentGuessIndex]);
 
   return (
     <GameContext.Provider

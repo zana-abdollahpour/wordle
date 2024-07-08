@@ -8,7 +8,7 @@ export default function Result({ result }: ResultProps) {
   let message;
   if (result === "OnGoing") message = "keep guessing ...";
   else if (result === "Won") message = "You guessed right!";
-  else if (result === "Lost") message = "You lust :(";
+  else if (result === "Lost") message = "You lost :(";
 
   return <h1 className="absolute top-6 text-4xl text-white">{message}</h1>;
 }
