@@ -13,7 +13,7 @@ export default function GuessRow({ tryIndex }: GuessRowProps) {
       {Array(targetWord.length)
         .fill(null)
         .map((_, i) => (
-          <GuessCell key={i}>
+          <GuessCell key={i} tryIndex={tryIndex} charIndex={i}>
             {tryIndex < currentGuessIndex
               ? guesses[tryIndex][i].char
               : tryIndex === currentGuessIndex
