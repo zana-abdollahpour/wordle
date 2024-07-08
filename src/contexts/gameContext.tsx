@@ -1,23 +1,22 @@
 import { createContext, useState } from "react";
 
+import type { CharPlacement } from "../types/guess.types";
+
 const NUM_ALLOWED_TRIES = 6;
 
-export type Validity = "right" | "wrong" | "absent";
-
-export type GameResult = "You Won!" | "You Lost!" | "keep guessing ...";
 export interface IGameContext {
   numAllowedTries: number;
   targetWord: string;
-  currentGuess: string;
-  previousGuesses: string[];
-  setCurrentGuess: React.Dispatch<React.SetStateAction<string>>;
-  setPreviousGuesses: React.Dispatch<React.SetStateAction<string[]>>;
-  currentTry: number;
-  charPlaceValidation: Validity[];
-  setCharPlaceValidation: React.Dispatch<React.SetStateAction<Validity[]>>;
-  result: GameResult;
-  setResult: React.Dispatch<React.SetStateAction<GameResult>>;
+  guesses: CharPlacement[];
+  setGuesses: React.Dispatch<React.SetStateAction<CharPlacement[]>>;
+  currentGuessIndex: number;
+  gameResult: GameResult;
+  setGameResult: React.Dispatch<React.SetStateAction<GameResult>>;
+  curGuess: string;
+  setCurGuess: React.Dispatch<React.SetStateAction<string>>;
 }
+
+export type GameResult = "Lost" | "OnGoing" | "Won";
 
 export const GameContext = createContext<IGameContext | null>(null);
 
@@ -27,31 +26,26 @@ export const GameProvider = ({
   // You can use lazy initialization with callback function to get the word from an api
   // We don't need setter function, because we won't change it
   const [targetWord] = useState<string>("regret");
-  const [currentGuess, setCurrentGuess] = useState<string>("");
-  const [previousGuesses, setPreviousGuesses] = useState<string[]>([]);
-  const [charPlaceValidation, setCharPlaceValidation] = useState<Validity[]>(
-    [],
-  );
-  const [result, setResult] = useState<GameResult>("keep guessing ...");
+  const [guesses, setGuesses] = useState<CharPlacement[]>([]);
+  const [gameResult, setGameResult] = useState<GameResult>("OnGoing");
+  const [curGuess, setCurGuess] = useState<string>("");
 
-  const currentTry = previousGuesses.length;
+  const currentGuessIndex = guesses.length;
 
-  if (currentTry >= NUM_ALLOWED_TRIES) setResult("You Lost!");
+  if (currentGuessIndex >= NUM_ALLOWED_TRIES) setGameResult("Lost");
 
   return (
     <GameContext.Provider
       value={{
         numAllowedTries: NUM_ALLOWED_TRIES,
         targetWord,
-        currentGuess,
-        setCurrentGuess,
-        previousGuesses,
-        setPreviousGuesses,
-        currentTry,
-        charPlaceValidation,
-        setCharPlaceValidation,
-        result,
-        setResult,
+        guesses,
+        setGuesses,
+        currentGuessIndex,
+        gameResult,
+        setGameResult,
+        curGuess,
+        setCurGuess,
       }}
     >
       {children}
