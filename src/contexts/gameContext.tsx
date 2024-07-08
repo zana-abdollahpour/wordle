@@ -14,6 +14,7 @@ export interface IGameContext {
   setGameResult: React.Dispatch<React.SetStateAction<GameResult>>;
   curGuess: string;
   setCurGuess: React.Dispatch<React.SetStateAction<string>>;
+  resetGame: () => void;
 }
 
 export type GameResult = "Lost" | "OnGoing" | "Won";
@@ -31,10 +32,15 @@ export const GameProvider = ({
   const [curGuess, setCurGuess] = useState<string>("");
 
   const currentGuessIndex = guesses.length;
-
   useEffect(() => {
     if (currentGuessIndex === NUM_ALLOWED_TRIES) setGameResult("Lost");
   }, [currentGuessIndex]);
+
+  const resetGame = () => {
+    setGuesses([]);
+    setGameResult("OnGoing");
+    setCurGuess("");
+  };
 
   return (
     <GameContext.Provider
@@ -48,6 +54,7 @@ export const GameProvider = ({
         setGameResult,
         curGuess,
         setCurGuess,
+        resetGame,
       }}
     >
       {children}
