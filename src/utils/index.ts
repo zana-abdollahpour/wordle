@@ -20,9 +20,11 @@ export const charPlacementChecker = (
   guess: string,
 ): CharPlacement => {
   const result = [...targetWord].map((char, i) => {
-    if (char === guess[i]) return { char, placement: "right" as const };
-    if (guess.includes(char)) return { char, placement: "misplaced" as const };
-    return { char, placement: "absent" as const };
+    if (char === guess[i])
+      return { char: guess[i], placement: "right" as const };
+    if (guess.includes(char))
+      return { char: guess[i], placement: "misplaced" as const };
+    return { char: guess[i], placement: "absent" as const };
   });
 
   return result;
