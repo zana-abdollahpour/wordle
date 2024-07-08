@@ -1,4 +1,5 @@
 import Keyboard from "react-simple-keyboard";
+import { toast } from "react-toastify";
 import "react-simple-keyboard/build/css/index.css";
 
 import { useGameState } from "../../hooks/useGameState";
@@ -23,7 +24,10 @@ export default function VirtualKeyboard() {
     }
 
     if (pressedKey === "{ent}") {
-      if (targetWord.length > curGuess.length) return;
+      if (targetWord.length > curGuess.length) {
+        toast("entered word is not long enough!");
+        return;
+      }
 
       const checkResult = wordChecker(targetWord, curGuess);
 
@@ -45,6 +49,9 @@ export default function VirtualKeyboard() {
         setCurGuess("");
         return;
       }
+
+      setCurGuess("");
+      toast.warn("no character in target word!");
     }
 
     const isValidLetter =

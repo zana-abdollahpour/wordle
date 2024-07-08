@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 import { useGameState } from "../../hooks/useGameState";
 import { charPlacementChecker, wordChecker } from "../../utils";
@@ -21,7 +22,10 @@ export default function WindowKeyPressHandler() {
       }
 
       if (e.key === "Enter") {
-        if (targetWord.length > curGuess.length) return;
+        if (targetWord.length > curGuess.length) {
+          toast("entered word is not long enough!");
+          return;
+        }
 
         const checkResult = wordChecker(targetWord, curGuess);
 
@@ -43,6 +47,9 @@ export default function WindowKeyPressHandler() {
           setCurGuess("");
           return;
         }
+
+        setCurGuess("");
+        toast.warn("no character in target word!");
       }
 
       if (curGuess.length >= targetWord.length) return;
