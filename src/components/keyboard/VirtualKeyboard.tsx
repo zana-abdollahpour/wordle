@@ -20,17 +20,20 @@ export default function VirtualKeyboard() {
       const checkResult = wordChecker(targetWord, curGuess);
 
       if (checkResult === "correct") {
+        setGuesses((prev) => [
+          ...JSON.parse(JSON.stringify(prev)),
+          charPlacementChecker(targetWord, curGuess),
+        ]);
         setGameResult("Won");
         setCurGuess("");
         return;
       }
 
       if (checkResult === "contains") {
-        setGuesses((prev) =>
-          JSON.parse(JSON.stringify(prev)).push(
-            charPlacementChecker(targetWord, curGuess),
-          ),
-        );
+        setGuesses((prev) => [
+          ...JSON.parse(JSON.stringify(prev)),
+          charPlacementChecker(targetWord, curGuess),
+        ]);
         setCurGuess("");
         return;
       }
