@@ -2,55 +2,45 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 
 import { useGameState } from "../../hooks/useGameState";
+import { charPlacementChecker, wordChecker } from "../../utils";
 
 export default function VirtualKeyboard() {
-  const {
-    targetWord,
-    currentGuess,
-    setCurrentGuess,
-    setCharPlaceValidation,
-    setPreviousGuesses,
-    setResult,
-  } = useGameState();
+  const { targetWord, setGuesses, curGuess, setCurGuess, setGameResult } =
+    useGameState();
 
   const handleKeyPress = (pressedKey: string) => {
     if (pressedKey === "{backspace}") {
-      setCurrentGuess((prev) => prev.slice(0, -1));
+      setCurGuess((prev) => prev.slice(0, -1));
       return;
     }
 
     if (pressedKey === "{ent}") {
-      if (targetWord.length > currentGuess.length) return;
+      if (targetWord.length > curGuess.length) return;
 
-      const hasTargetChar = [...currentGuess].some((char) =>
-        [...targetWord].includes(char),
-      );
+      const checkResult = wordChecker(targetWord, curGuess);
 
-      if (!hasTargetChar) return;
-
-      if (currentGuess === targetWord) {
-        setResult("You Won!");
+      if (checkResult === "correct") {
+        setGameResult("Won");
+        setCurGuess("");
+        return;
       }
 
-      setCharPlaceValidation(
-        [...currentGuess].map((char, i) =>
-          char === targetWord[i]
-            ? "right"
-            : [...targetWord].includes(char)
-              ? "wrong"
-              : "absent",
-        ),
-      );
-
-      setPreviousGuesses((prev) => [...prev, currentGuess]);
-      setCurrentGuess("");
+      if (checkResult === "contains") {
+        setGuesses((prev) =>
+          JSON.parse(JSON.stringify(prev)).push(
+            charPlacementChecker(targetWord, curGuess),
+          ),
+        );
+        setCurGuess("");
+        return;
+      }
     }
 
     const isValidLetter =
       /^[a-zA-Z]+$/.test(pressedKey) && pressedKey.length === 1;
     if (!isValidLetter) return;
 
-    setCurrentGuess((prev) => (prev += pressedKey.toLowerCase()));
+    setCurGuess((prev) => (prev += pressedKey.toLowerCase()));
   };
 
   return (

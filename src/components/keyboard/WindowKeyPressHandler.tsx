@@ -1,69 +1,52 @@
 import { useEffect } from "react";
 
 import { useGameState } from "../../hooks/useGameState";
+import { charPlacementChecker, wordChecker } from "../../utils";
 
 export default function WindowKeyPressHandler() {
-  const {
-    targetWord,
-    currentGuess,
-    setCurrentGuess,
-    setCharPlaceValidation,
-    setPreviousGuesses,
-    setResult,
-  } = useGameState();
+  const { targetWord, setGuesses, curGuess, setCurGuess, setGameResult } =
+    useGameState();
 
   useEffect(() => {
     const keyPressHandler = (e: KeyboardEvent) => {
       if (e.key === "Backspace") {
-        setCurrentGuess((prev) => prev.slice(0, -1));
+        setCurGuess((prev) => prev.slice(0, -1));
+        return;
       }
+
       if (e.key === "Enter") {
-        if (targetWord.length > currentGuess.length) return;
+        if (targetWord.length > curGuess.length) return;
 
-        const hasTargetChar = [...currentGuess].some((char) =>
-          [...targetWord].includes(char),
-        );
+        const checkResult = wordChecker(targetWord, curGuess);
 
-        if (!hasTargetChar) return;
-
-        if (currentGuess === targetWord) {
-          setResult("You Won!");
+        if (checkResult === "correct") {
+          setGameResult("Won");
+          setCurGuess("");
+          return;
         }
 
-        setCharPlaceValidation(
-          [...currentGuess].map((char, i) =>
-            char === targetWord[i]
-              ? "right"
-              : [...targetWord].includes(char)
-                ? "wrong"
-                : "absent",
-          ),
-        );
-
-        setPreviousGuesses((prev) => [...prev, currentGuess]);
-        setCurrentGuess("");
+        if (checkResult === "contains") {
+          setGuesses((prev) =>
+            JSON.parse(JSON.stringify(prev)).push(
+              charPlacementChecker(targetWord, curGuess),
+            ),
+          );
+          setCurGuess("");
+          return;
+        }
       }
 
-      if (currentGuess.length >= targetWord.length) return;
+      if (curGuess.length >= targetWord.length) return;
 
       const isValidLetter = /^[a-zA-Z]+$/.test(e.key) && e.key.length === 1;
       if (!isValidLetter) return;
 
-      setCurrentGuess((prev) => (prev += e.key.toLowerCase()));
+      setCurGuess((prev) => (prev += e.key.toLowerCase()));
     };
 
     window.addEventListener("keydown", keyPressHandler);
     return () => window.removeEventListener("keydown", keyPressHandler);
-  }, [
-    currentGuess,
-    currentGuess.length,
-    setCharPlaceValidation,
-    setCurrentGuess,
-    setPreviousGuesses,
-    setResult,
-    targetWord,
-    targetWord.length,
-  ]);
+  }, [curGuess, setCurGuess, setGameResult, setGuesses, targetWord]);
 
   return null;
 }
