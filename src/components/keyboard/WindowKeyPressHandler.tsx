@@ -4,8 +4,14 @@ import { useGameState } from "../../hooks/useGameState";
 import { charPlacementChecker, wordChecker } from "../../utils";
 
 export default function WindowKeyPressHandler() {
-  const { targetWord, setGuesses, curGuess, setCurGuess, setGameResult } =
-    useGameState();
+  const {
+    targetWord,
+    setGuesses,
+    curGuess,
+    setCurGuess,
+    setGameResult,
+    gameResult,
+  } = useGameState();
 
   useEffect(() => {
     const keyPressHandler = (e: KeyboardEvent) => {
@@ -44,12 +50,24 @@ export default function WindowKeyPressHandler() {
       const isValidLetter = /^[a-zA-Z]+$/.test(e.key) && e.key.length === 1;
       if (!isValidLetter) return;
 
-      setCurGuess((prev) => (prev += e.key.toLowerCase()));
+      setCurGuess((prev) =>
+        prev.length <= targetWord.length ? (prev += e.key.toLowerCase()) : prev,
+      );
     };
+
+    if (gameResult !== "OnGoing")
+      return () => window.removeEventListener("keydown", keyPressHandler);
 
     window.addEventListener("keydown", keyPressHandler);
     return () => window.removeEventListener("keydown", keyPressHandler);
-  }, [curGuess, setCurGuess, setGameResult, setGuesses, targetWord]);
+  }, [
+    curGuess,
+    gameResult,
+    setCurGuess,
+    setGameResult,
+    setGuesses,
+    targetWord,
+  ]);
 
   return null;
 }

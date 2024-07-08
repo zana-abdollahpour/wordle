@@ -5,10 +5,18 @@ import { useGameState } from "../../hooks/useGameState";
 import { charPlacementChecker, wordChecker } from "../../utils";
 
 export default function VirtualKeyboard() {
-  const { targetWord, setGuesses, curGuess, setCurGuess, setGameResult } =
-    useGameState();
+  const {
+    targetWord,
+    setGuesses,
+    curGuess,
+    setCurGuess,
+    setGameResult,
+    gameResult,
+  } = useGameState();
 
   const handleKeyPress = (pressedKey: string) => {
+    if (gameResult !== "OnGoing") return;
+
     if (pressedKey === "{backspace}") {
       setCurGuess((prev) => prev.slice(0, -1));
       return;
@@ -43,7 +51,11 @@ export default function VirtualKeyboard() {
       /^[a-zA-Z]+$/.test(pressedKey) && pressedKey.length === 1;
     if (!isValidLetter) return;
 
-    setCurGuess((prev) => (prev += pressedKey.toLowerCase()));
+    setCurGuess((prev) =>
+      prev.length <= targetWord.length
+        ? (prev += pressedKey.toLowerCase())
+        : prev,
+    );
   };
 
   return (
